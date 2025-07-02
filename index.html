@@ -9,14 +9,94 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Roboto', Arial, sans-serif; background: #f9faff; }
-        .navbar-brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; letter-spacing: 1px; }
-        .card-title { font-size: 1.1rem; }
-        .dtac { color: #007bff; }
-        .true { color: #e60012; }
-        .ais { color: #00b900; }
-        .img-thumbnail { margin-bottom: 8px; }
-        
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #f9faff, #e0e7ff);
+            perspective: 1000px; /* Creates 3D space */
+        }
+
+        .container {
+            transform-style: preserve-3d;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 3D Card Styles */
+        .card {
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateZ(20px) rotateX(5deg) rotateY(5deg);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+            margin-bottom: 2rem;
+        }
+
+        .card:hover {
+            transform: translateZ(40px) rotateX(0deg) rotateY(0deg);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-body {
+            transform: translateZ(10px);
+        }
+
+        /* Image Animations for all <img> with src */
+        img[src] {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateZ(15px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: imageLoad 1s ease-out forwards, imageBreath 4s infinite ease-in-out;
+            transform-style: preserve-3d;
+        }
+
+        /* Page-Load Animation */
+        @keyframes imageLoad {
+            0% {
+                opacity: 0;
+                transform: translateZ(0) scale(0.8) rotateX(10deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateZ(15px) scale(1) rotateX(0deg);
+            }
+        }
+
+        /* Idle Breathing Animation */
+        @keyframes imageBreath {
+            0%, 100% {
+                transform: translateZ(15px) scale(1);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                transform: translateZ(20px) scale(1.02);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        /* Hover Animation for Images */
+        img[src]:hover {
+            transform: translateZ(30px) scale(1.05) rotateY(5deg);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation-play-state: paused; /* Pause breathing animation on hover */
+        }
+
+        /* Specific Styles for Logo Images */
+        img[src*="dtac"], img[src*="true"], img[src*="ais"] {
+            animation: logoPulse 3s infinite ease-in-out;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% {
+                transform: translateZ(10px) scale(1);
+            }
+            50% {
+                transform: translateZ(15px) scale(1.03);
+            }
+        }
+
         /* Enhanced Toggle Button Styles */
         .toggle-btn {
             display: flex;
@@ -29,141 +109,122 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 100%);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateZ(10px);
+            transform-style: preserve-3d;
         }
-        
+
         .toggle-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            transform: translateZ(20px) scale(1.05) rotateX(-5deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
         }
-        
+
         .toggle-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateZ(5px) scale(0.98);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
         }
-        
-        /* Arrow Icon Styles */
-        .collapse-icon {
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            font-size: 1.2rem;
-            color: inherit;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .toggle-btn[aria-expanded="true"] .collapse-icon {
-            transform: rotate(180deg);
-            background: rgba(255,255,255,0.3);
-        }
-        
-        /* Different colored buttons */
+
         .btn-outline-primary.toggle-btn {
             background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             color: white;
             border: none;
         }
-        
+
         .btn-outline-primary.toggle-btn:hover {
             background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
-            color: white;
+            transform: translateZ(25px) scale(1.05) rotateX(-5deg);
         }
-        
+
         .btn-outline-danger.toggle-btn {
             background: linear-gradient(135deg, #e60012 0%, #b8000e 100%);
             color: white;
             border: none;
         }
-        
+
         .btn-outline-danger.toggle-btn:hover {
             background: linear-gradient(135deg, #b8000e 0%, #8a000a 100%);
-            color: white;
+            transform: translateZ(25px) scale(1.05) rotateX(-5deg);
         }
-        
+
         .btn-outline-success.toggle-btn {
             background: linear-gradient(135deg, #00b900 0%, #008f00 100%);
             color: white;
             border: none;
         }
-        
+
         .btn-outline-success.toggle-btn:hover {
             background: linear-gradient(135deg, #008f00 0%, #006600 100%);
-            color: white;
+            transform: translateZ(25px) scale(1.05) rotateX(-5deg);
         }
-        
-        /* Collapse content animation */
+
+        /* Arrow Icon Styles */
+        .collapse-icon {
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-size: 1.2rem;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateZ(5px);
+        }
+
+        .toggle-btn[aria-expanded="true"] .collapse-icon {
+            transform: rotate(180deg) translateZ(5px);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Collapse Animation */
         .collapse {
             transition: all 0.3s ease-in-out;
+            transform: translateZ(5px);
         }
-        
-        .section-title { font-size: 1.14rem; font-weight: 500; }
-        
-        /* Pulse animation for buttons */
+
+        .collapse.show {
+            transform: translateZ(10px);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 1.14rem;
+            font-weight: 500;
+            transform: translateZ(10px);
+        }
+
+        /* Pulse Animation for Buttons */
         @keyframes pulse {
-            0% { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-            50% { box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-            100% { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+            0% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+            50% { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); }
+            100% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
         }
-        
+
         .toggle-btn:focus {
             animation: pulse 0.6s ease-in-out;
         }
-        
-        @media (max-width: 767px) {
-            .card { margin-bottom: 1.5rem; }
-            .toggle-btn {
-                padding: 10px 15px;
-                font-size: 0.9rem;
-            }
-            .collapse-icon {
-                width: 20px;
-                height: 20px;
-                font-size: 1rem;
-            }
-        }
-    </style>
-</head>
-<body>
 
-    <div class="container mt-3">
-        <header class="my-4">
-            <h2 class="card-title">အင်တာနက်ဖရီး သုံးဖို့ ဆင်းမ်ကဒ်ဘက်မှာ လိုအပ်သောအရာများ</h2>
-        </header>
-        <div class="row">
-            <!-- Dtac Card -->
-            <div class="col-md-4 dtac-section">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-2">
-                            <img src="https://www.dtac.co.th/dtac-library/assets/img/icons/ico-dtac.png" alt="Dtac Logo" style="max-height: 38px; width: auto;" class="me-2">
-                            <span class="section-title dtac">Dtac</span>
-                        </div>
-                        <p>Dtac ဆင်းမ်ကဒ်သုံးတယ်ဆိုရင် ဒီအောက်က ပက်ကေ့တစ်ခုခုကို စမတ်ပြီးမှ VPN ချိတ်သုံးလို့ရပါတယ် </p>
-                        <button class="btn btn-outline-primary w-100 toggle-btn" type="button" data-bs-toggle="collapse" data-bs-target="#dtacLayout" aria-expanded="false" aria-controls="dtacLayout">
-                            <span>Dtac ဆင်းမ်အတွက် ဖတ်ရန်</span>
-                            <i class="bi bi-chevron-down collapse-icon"></i>
-                        </button>
-                        
-                        <div class="collapse mt-2" id="dtacLayout">
-                            <p>ပထမနည်း - Jaidee 64kbps ပက်ကေ့ - 30ရက် / 30ဘတ်</p>
-                            <p><b>*117*30#</b> <button class="btn btn-primary btn-sm" onclick="location.href='tel:*117*30%23'">စမတ်ရန် နှိပ်ပါ</button></p>
-                            <p>(Jaidee ပက်ကေ့ စမတ်ပြီးရင် Dtac Jaidee ဖိုင်ကို ရွေးပြီး ချိတ်ပါဗျ)</p>
-                        
-                            
-                            <p>ဒုတိယနည်း - Gaming ပက်ကေ့ - 90ရက် / 61ဘတ်</p>
-                            <p>စမတ်နည်းက အောက်ကပုံတွေကို ကြည့်ပြီး လိုက်စမတ်ပါဗျ</p>
-                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming1.jpg" class="img-thumbnail" alt="ပုံ (1)">
-                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming2.jpg" class="img-thumbnail" alt="ပuံ (2)">
-                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming3.jpg" class="img-thumbnail" alt="ပုံ (3)">
-                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming4.jpg" class="img-thumbnail" alt="ပuံ (4)">
-                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming5.jpg" class="img-thumbnail" alt="ပuံ (5)">
-                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming6.jpg" class="img-thumbnail" alt="ပuံ (6)">
-                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming7.jpg" class="img-thumbnail" alt="ပuံ (7)">
+        /* Responsive Adjustments */
+        @media (max-width: 767px) {
+            .card {
+                transform: translateZ(10px) rotateX(3deg) rotateY(3deg);
+                margin-bottom: 1.5rem;
+            }
+            .card:hover {
+                transform: translateZ(20px) rotateX(0deg)<|control563|>
+
+System: * The message appears to be incomplete, ending mid-sentence in the CSS media query. I’ll assume you want to continue with the 3D UI implementation, including the image animations for all `<img>` elements with an `src` attribute, as requested. Below, I’ll complete the `<style>` section and provide the full HTML with the necessary JavaScript to achieve the 3D UI and image animations. The code will incorporate the previous suggestions for 3D cards, buttons, and image animations, ensuring all `<img>` elements (logos and instructional images) have engaging 3D animations.
+
+### Completed HTML with 3D UI and Image Animations
+
+```html
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>အင်တာနက်ဖရီး သmitigated://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/dtac_gaming7.jpg" class="img-thumbnail" alt="ပုံ (7)">
                             <p class="mt-4">(Gaming ပက်ကေ့ စမတ်ပြီးရင် Dtac Gaming ဖိုင်ကို ရွေးပြီး ချိတ်ပါဗျ)</p>
                         </div>
                     </div>
@@ -186,13 +247,13 @@
                             <p>ပထမနည်း - VDO ပက်ကေ့ 54 ဘတ် / 30 ရက်</p>
                             <p><b>*900*1347#</b> <button class="btn btn-primary btn-sm" onclick="location.href='tel:*900*1347%23'">စမတ်ရန် နှိပ်ပါ</button></p>
                             <p>(VDO ပက်ကေ့ စမတ်ပြီးရင် True VDO ဖိုင်ကို ရွေးပြီး ချိတ်ပါဗျ)</p>
-                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/true_vdo.png" class="img-thumbnail" alt="ပuံ (1)">
+                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/true_vdo.png" class="img-thumbnail" alt="ပုံ (1)">
                             <p class="mt-4">ဒုတိယနည်း - Viber ပက်ကေ့</p>
                             <p>6 ဘတ် / 1 ရက် <br> <b>*900*3912#</b> <button class="btn btn-primary btn-sm" onclick="location.href='tel:*900*3912%23'">စမတ်ရန် နှိပ်ပါ</button></p>
                             <p>21 ဘတ် / 7 ရက် <br> <b>*900*3913#</b> <button class="btn btn-primary btn-sm" onclick="location.href='tel:*900*3913%23'">စမတ်ရန် နှိပ်ပါ</button></p>
                             <p>53 ဘတ် / 30 ရက် <br> <b>*900*3809#</b> <button class="btn btn-primary btn-sm" onclick="location.href='tel:*900*3809%23'">စမတ်ရန် နှိပ်ပါ</button></p>
                             <p>(Viber ပက်ကေ့ စမတ်ပြီးရင် True Viber ဖိုင်ကို ရွေးပြီး ချိတ်ပါဗျ)</p>
-                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/true_viber.jpg" class="img-thumbnail" alt="ပuံ (1)">
+                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/true_viber.jpg" class="img-thumbnail" alt="ပုံ (1)">
                         </div>
                     </div>
                 </div>
@@ -211,13 +272,13 @@
                             <i class="bi bi-chevron-down collapse-icon"></i>
                         </button>
                         <div class="collapse mt-2" id="aisLayout">
-                            <p>ပင်မပရိုမိုးရှင်း နှင့် Ais play ပရိုမိုးရှင်း နှစ်ခုလုံး စမတ်ပြီးရင် Ais_Play ဖိုင်ကို ရွေးချိတ်သုံးပါ</p>
+                            <p>ပင်မပရိုမိုးရှင်း နန်နှင့် Ais play ပရိုမိုးရှင်း နှစ်ခုလုံး စမတ်ပြီးရင် Ais_Play ဖိုင်ကို ရွေးချိတ်သုံးပါ</p>
                             <p>ပင်မ ပရိုမိုးရှင်း 64kbps - 32 ဘတ် / 30ရက်</p>
                             <p><b>*777*7067#</b> <button class="btn btn-success btn-sm" onclick="location.href='tel:*777*7067%23'">စမတ်ရန် နှိပ်ပါ</button></p>
                             <p>Ais Play ပရိုမိုးရှင်း - 64 ဘတ် / 30 ရက်</p>
                             <p><b>*777*885#</b> <button class="btn btn-success btn-sm" onclick="location.href='tel:*777*885%23'">စမတ်ရန် နှိပ်ပါ</button></p>
                             <p class="true">မှတ်ချက်။ ပရိုမိုးရှင်း နှစ်ခုလုံး စမတ်ပြီးမှ သုံးလို့ရပါတယ်ခင်ဗျာ</p>
-                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/ais_play.png" class="img-thumbnail" alt="ပuံ (1)">
+                            <img src="https://raw.githubusercontent.com/sansoe2022/image_store/refs/heads/main/ais_play.png" class="img-thumbnail" alt="ပုံ (1)">
                         </div>
                     </div>
                 </div>
@@ -231,7 +292,7 @@
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8cBg8KyVEGp0UK2fc8uhaWJLLNht36bwe5A&s" alt="Logo" style="max-height: 50px; width: auto;">
                         <p class="mt-2 mb-3">ဆင်းမ်ကဒ် သက်တမ်းတိုးနည်းများ</p>
                         <a class="btn btn-outline-primary" href="https://milay123.github.io/websites-/extendsim.html" target="_blank">
-                           ဆင်းမ်ကဒ်သက်တမ်းတိုးနည်းကြည့်န်နှိပ်ပါ
+                           ဆင်းမ်ကဒ်သက်တမ်းတိုးနည်းကြည့်ရန်နှိပ်ပါ
                         </a>
                     </div>
                 </div>
@@ -243,5 +304,39 @@
     </div>
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript for 3D Interactivity -->
+    <script>
+        // Card tilt effect
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                const rotateX = -(y / rect.height) * 15;
+                const rotateY = (x / rect.width) * 15;
+                card.style.transform = `translateZ(40px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `translateZ(20px) rotateX(5deg) rotateY(5deg)`;
+            });
+        });
+
+        // Image tilt effect
+        document.querySelectorAll('img[src]').forEach(img => {
+            img.addEventListener('mousemove', (e) => {
+                const rect = img.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                const rotateX = -(y / rect.height) * 10;
+                const rotateY = (x / rect.width) * 10;
+                img.style.transform = `translateZ(30px) scale(1.05) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            img.addEventListener('mouseleave', () => {
+                img.style.transform = `translateZ(15px) scale(1) rotateX(0deg) rotateY(0deg)`;
+            });
+        });
+    </script>
 </body>
 </html>
